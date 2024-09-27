@@ -1,5 +1,5 @@
 import { products } from './product.js';
-import { cartItems, addToAdd} from './cart.js';
+import { cartItems, addToAdd, removeItemFromLocalStorage} from './cart.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchMenu = document.getElementById('search-menu');
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     searchMenu.addEventListener('keyup', (e) => {
+        e.preventDefault()
         const searchText = e.target.value.toLowerCase();
         const menuLists = document.querySelectorAll('.food-items');
 
@@ -19,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchItem = menuList.textContent.toLowerCase();
             menuList.style.display = searchItem.includes(searchText) ? 'block' : 'none';
             if (searchItem.includes(searchText)) {
-                menuList.style.width = '400px';
             }
         });
     });
@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="details">
                     <div class="details-sub">
                         <h5>${product.name}</h5>
-                        <h5 class="price">${product.price}</h5>
+                        <h5 class="price">&#8358;${product.price}</h5>
                     </div>
-                    <p>Freshly made burger with fries</p>
+                    <p>${product.description}</p>
                     <button class="add-to-cart" data-product="${product.id}">Add To Cart</button>
                 </div>
             </div>
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <img src="${matchingProduct.image}" style="width:100px;">
                             </div>
                             <div style="vertical-align: bottom;">
-                                <h4 class="price"><strong>Price:</strong> ${itemTotalPrice}</h4>
+                                <h4 class="price"><strong>Price:</strong>&#8358; ${itemTotalPrice}</h4>
                                 <button class="subtract-button" data-product-id="${productId}">-</button>
                                 <button class="item-quantity">${cartItem.quantity}</button>
                                 <button class="add-button" data-product-id="${productId}">+</button>
@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             // Update the cart quantity display after clearing the cart
             updateCartQuantityDisplay();  // Call this after clearing the cart
+            removeItemFromLocalStorage()
         });
     }
     
@@ -152,7 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
                 // Call productCartItems() to recalculate and update the cart
                 productCartItems();
+                removeItemFromLocalStorage()
                 updateUI()
+                
             });
         });
     }
@@ -231,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     
         cartQuantityElement.innerHTML = cartQuantity;
-
         displayMessage('Item has been added to the cart');
     }
     
@@ -277,3 +279,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
 });
+
